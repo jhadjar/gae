@@ -100,7 +100,7 @@ class Handler(webapp2.RequestHandler):
 					data = grab('username', 'password')
 
 			Arguments:
-				tuple of parameter names
+				parameter names
 			Output:
 
 		"""
