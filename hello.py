@@ -1,3 +1,10 @@
+"""
+	Google App Engine Fun (gaefun) stemmed from the CS253 Udacity course.
+	The course is about Web Development, not about Python. I rewrite the 
+	code to incorporate the knowledge I glean here and there to make it 
+	better with respect to Python, and good practices as I learn them.
+"""
+
 import os
 import re
 import urllib2
@@ -5,6 +12,13 @@ import urllib2
 import jinja2
 import webapp2
 from google.appengine.ext import db
+
+__title__ = 'gaefun'
+__version__ = '1.0'
+__author__ = 'Jugurtha Hadjar'
+__license__ = 'Apache 2.0'
+__copyright__ = 'Copyright 2016'
+
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -17,6 +31,27 @@ PAGES = {
 	'newpost': "newpost.html",
 	'signup': "signup.html",
 }
+
+URLS = [
+	# Using "lazy handlers" as per: http://webapp2.readthedocs.io/en/latest/
+	# guide/routing.html#guide-routing-lazy-handlers
+
+	# This is normally done post handler definitions or it raises a NameError.
+
+	# I want the URIs and their handlers to be at the top so a reader can have
+	# see the big picture of what URI is handled by which handler as opposed to
+	# having this at the bottom as in the usual way. One inconvenience of this 
+	# is that I had to prefix with 'hello.' because I couldn't figure out a way
+	# to make forward declarations not ugly.
+
+	# TODO: Find a better way to make it look like this ('/', 'MainPage')
+
+	('/', 'hello.MainPage'),
+	('/blog/?', 'hello.BlogHandler'),
+	('/blog/newpost', 'hello.NewPostHandler'),
+	('/blog/([0-9]+)', 'hello.PostHandler'),
+	('/blog/signup', 'hello.SignupHandler'),
+]
 
 
 # Set execution environment: current directory, static files, etc.
@@ -33,15 +68,15 @@ class Handler(webapp2.RequestHandler):
 		Handler for rendering templates.
 	"""
 
-	def render(self, template, data={}):
+	def render(self, template, data):
 		"""
-			Render template.
+			Render `template` populated with `data`.
 
 			Arguments:
 				template: to render (ex: "page.html")
 				data: key:values to populate template.
 			Output:
-				write page.
+				rendering.
 		"""
 
 		t = jinja_env.get_template(template)
@@ -55,10 +90,17 @@ class Handler(webapp2.RequestHandler):
 
 	def grab(self, *args):
 		"""
-			Grab request parameters.
+			Grab request parameters and make a dictionary out of them.
+			Why:
+				- Usual way is to do this whenever we need to get params:
+					username = self.request.get('username')
+					password = self.request.get('password')
+
+				- I want to make it simpler:
+					data = grab('username', 'password')
 
 			Arguments:
-				parameter names
+				tuple of parameter names
 			Output:
 
 		"""
@@ -90,7 +132,7 @@ class PostHandler(Handler):
 
 class BlogHandler(Handler):
 	"""
-		Blog handler
+		Display the blog in its entirety.
 	"""
 	
 	def get(self):
@@ -129,14 +171,16 @@ class SignupHandler(Handler):
 			'email',
 		)
 
+		# TODO: Signup verifications not yet complete. 
+		#		Toy a bit with that and App Engine's "users".
 		if data['password'] != data['verify']:
 			data['verify_error'] = 'Passwords must match'
 			self.render(PAGES['signup'], data)
 
 class NewPostHandler(Handler):
 	"""
-		Handler for new blog post page.
-		Redirects to post permalink once submitted.
+		Handler for new blog post submission page.
+		Once the post is submitted, redirects to its permalink.
 	"""
 
 	def get(self):
@@ -165,12 +209,4 @@ class Article(db.Model):
 	created = db.DateTimeProperty(auto_now_add=True)
 
 
-app = webapp2.WSGIApplication(
-	[
-	('/', MainPage),
-	('/blog/?', BlogHandler),
-	('/blog/newpost', NewPostHandler),
-	('/blog/([0-9]+)', PostHandler),
-	('/blog/signup', SignupHandler),
-	],
-	debug=True)
+app = webapp2.WSGIApplication(URLS, debug=True)
