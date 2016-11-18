@@ -69,6 +69,7 @@ class MainPage(Handler):
 	"""
 		Home page handler
 	"""
+
 	def get(self):
 		self.render(PAGES['main'])
 
@@ -83,13 +84,9 @@ class PostHandler(Handler):
 	"""
 
 	def get(self, article_id):
-		article = Article.get_by_id(int(article_id))
-
-		data = {
-			'article': article,
-		}
-
+		data = {'article': Article.get_by_id(int(article_id))}
 		self.render(PAGES['lonepost'], data)
+
 
 class BlogHandler(Handler):
 	"""
@@ -147,13 +144,16 @@ class NewPostHandler(Handler):
 
 	def post(self):
 
-		data = self.grab('subject', 'content')
+		data = self.grab('title', 'body')
 
 		if len(data) != 2:
 			data['error'] = 'Title *and* body'
 			self.render(PAGES['newpost'], data)
 
-		a = Article(title=data['subject'], article_body=data['content'])
+		a = Article(
+			title=data['title'],
+			body=data['body'],
+		)
 		a.put()
 		permalink = str(a.key().id())
 		self.redirect('/blog/{}'.format(permalink))
@@ -161,7 +161,7 @@ class NewPostHandler(Handler):
 
 class Article(db.Model):
 	title = db.StringProperty(required=True)
-	article_body = db.TextProperty(required=True)
+	body = db.TextProperty(required=True)
 	created = db.DateTimeProperty(auto_now_add=True)
 
 
