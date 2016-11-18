@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block title %}CS253 Best Blog Eva {{visits}}{% endblock %}
+
+{% block content %}
+
+
+	<div class = "header">
+		<h1>Articles</h1>
+	</div>
+	<div class="toolbar">
+	</div>
+
+	<div class="middle-body">
+
+		{% for article in articles %}
+
+			<div class="article">
+				<div class="article-title">{{article.title}}</div>
+				<hr>
+				<div class="article-body">{{article.article_body}}</div>
+			</div>
+
+		{% endfor %}
+	</div>
+
+{% endblock %}

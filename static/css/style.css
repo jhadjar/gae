@@ -1,0 +1,98 @@
+.header {
+	height: 80px;
+	margin: 0;
+	padding: 0;
+	background-color: rgba(32,166,231,1);
+	width: 100%;
+	line-height: 80px;
+	color:white;
+	font-family:arial;
+}
+
+.toolbar {
+	height: 80px;
+}
+
+.header:hover{
+	-webkit-transform: scale(1,1.05);
+	transition: 100ms;
+
+}
+
+body{
+	margin: 0;
+	font-family: "Helvetica", "Arial", sans-serif;
+	line-height: 1.6;
+	color: #555;
+}
+
+.middle-body {
+	/*border-radius: 25px;*/
+	font-family: arial;
+	width: 50%;
+	margin: 0 auto;
+	padding: 10px;
+	background: #f7f7f7;
+
+	/*background-color: white;*/
+}
+
+.form-wrapper {
+	border-radius: 25px;
+	padding: 10px;
+	width: 500px;
+	margin: 200px auto;
+	color: white;
+	background-color: rgba(32,166,231,1);
+	text-align: center;
+}
+
+.error {
+	color: red;
+}
+
+label {
+	display: block;
+	font-size: 20px;
+}
+
+input[type=text] {
+	width: 400px;
+	font-size: 20px;
+	padding: 2px;
+}
+
+input[type=password] {
+	width: 400px;
+	font-size: 20px;
+	padding: 2px;
+}
+hr {
+	margin: 20px;
+}
+
+h1 {
+	text-align: center;
+	margin: auto;
+}
+
+textarea {
+	width: 400px;
+	height: 100px;
+}
+
+.article + .article {
+	margin-top: 20px;
+}
+
+.article-title {
+	font-weight: bold;
+	text-align: center;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.article-body {
+	margin: 100px;
+	font-size: 17px;
+}

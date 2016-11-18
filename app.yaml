@@ -1,0 +1,27 @@
+application: myjugapp
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /static/css
+  static_dir: static/css
+  expiration: "1d"
+# - url: /images
+#   static_dir: images
+# - url: /css
+#   static_dir: css
+
+- url: /.*
+  script: hello.app
+
+
+libraries:
+- name: jinja2
+  version: latest

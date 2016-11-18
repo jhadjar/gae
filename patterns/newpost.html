@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title%}CS253 Blog New Article{% endblock %}
+
+{% block content %}
+
+
+<div class="form-wrapper">
+	<!-- <h1>New Article</h1> -->
+
+	<form class="newpost-form" method="post">
+		<label>
+			<div>title</div>
+			<input type="text" name="subject" value="{{title}}" required>
+		</label>
+
+		<label>
+			<div>article-body</div>
+			<textarea name="content" required>{{article_body}}</textarea>
+		</label>
+
+		<div class="error">{{error}}</div>
+
+		<input type="submit">
+	</form>
+</div>
+{% endblock %}
