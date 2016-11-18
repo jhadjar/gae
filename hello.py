@@ -68,7 +68,7 @@ class Handler(webapp2.RequestHandler):
 		Handler for rendering templates.
 	"""
 
-	def render(self, template, data):
+	def render(self, template, data={}):
 		"""
 			Render `template` populated with `data`.
 
