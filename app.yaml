@@ -19,7 +19,7 @@ handlers:
 
 - url: /.*
   script: hello.app
-
+  secure: always
 
 libraries:
 - name: jinja2

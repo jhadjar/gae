@@ -30,6 +30,7 @@ PAGES = {
 	'lonepost': "lonepost.html",
 	'newpost': "newpost.html",
 	'signup': "signup.html",
+	'404': "404.html",
 }
 
 URLS = [
@@ -51,6 +52,7 @@ URLS = [
 	('/blog/newpost', 'hello.NewPostHandler'),
 	('/blog/([0-9]+)', 'hello.PostHandler'),
 	('/blog/signup', 'hello.SignupHandler'),
+	
 ]
 
 
