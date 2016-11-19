@@ -167,15 +167,12 @@ class SignupHandler(Handler):
 		data = self.grab(
 			'username',
 			'password',
-			'verify',
+			# 'verify',
 			'email',
 		)
 
 		# TODO: Signup verifications not yet complete. 
 		#		Toy a bit with that and App Engine's "users".
-		if data['password'] != data['verify']:
-			data['verify_error'] = 'Passwords must match'
-			self.render(PAGES['signup'], data)
 
 class NewPostHandler(Handler):
 	"""
