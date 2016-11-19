@@ -82,7 +82,7 @@ class Handler(webapp2.RequestHandler):
 		t = jinja_env.get_template(template)
 		self.response.headers.add_header(
 			'Cache-Control',
-			'max-age=6000',
+			'public; max-age=6000',
 		)
 
 		self.response.out.write(t.render(data))

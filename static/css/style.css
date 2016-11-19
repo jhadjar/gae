@@ -97,3 +97,13 @@ textarea {
 	margin: 100px;
 	font-size: 17px;
 }
+
+
+@media (max-width: 768px){
+	.middle-body {
+		width: 80%;
+	}
+	.header > h1 {
+		font-size: 25px;
+	}
+}

@@ -12,7 +12,6 @@ handlers:
 
 - url: /static/css
   static_dir: static/css
-  expiration: "1d"
 # - url: /images
 #   static_dir: images
 # - url: /css
