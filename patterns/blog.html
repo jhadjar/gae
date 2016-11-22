@@ -3,7 +3,7 @@
 
 {% block title %}CS253 Best Blog Eva {{visits}}{% endblock %}
 
-{% block content %}
+{% block headlessbody %}
 
 
 	<div class = "header">
@@ -12,7 +12,7 @@
 	<div class="toolbar">
 	</div>
 
-	<div class="middle-body">
+	{% block core %}
 
 		{% for article in articles %}
 
@@ -23,6 +23,6 @@
 			</div>
 
 		{% endfor %}
-	</div>
+	{% endblock %}
 
 {% endblock %}

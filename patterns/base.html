@@ -3,11 +3,32 @@
 	<head>
 		{% block head %}{% endblock %}
 		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" type="text/css" href="/static/css/_style.css"/>
 		<meta name=viewport content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 	</head>
 	<body>
-		{% block content %}
-		{% endblock %}
+
+		<header>
+				{% block header %}
+					<h1>{% block mast %}{% endblock %}</h1>
+				{% endblock %}
+		</header>
+
+		<div id="headlessbody">
+
+			<div id="core">
+				{% block core %}{% endblock %}
+			</div>
+
+			<div id="leftflank">
+				{% block leftflank %}{% endblock %}
+			</div>
+
+			<div id="rightflank">
+				{% block rightflank %}{% endblock %}
+			</div>
+
+		</div>
+
 	</body>
 </html>
