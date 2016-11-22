@@ -1,7 +1,16 @@
-.header {
-	height: 80px;
+body{
+	margin: 0;
+	font-family: "Helvetica", "Arial", sans-serif;
+	line-height: 1.6;
+	color: #555;
+}
+
+header {
+	display: block;
+	height: 100px;
 	margin: 0;
 	padding: 0;
+	min-height: 80px;
 	background-color: rgba(32,166,231,1);
 	width: 100%;
 	line-height: 80px;
@@ -9,22 +18,49 @@
 	font-family:arial;
 }
 
+header > h1 {
+	text-align: center;
+	margin: auto;
+	font-size: 24pt;
+
+}
+
+#headlessbody {
+	min-height: 800px;
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	flex-flow: row;
+}
+
+
+
+#headlessbody > #core {
+	margin: 0px;
+	flex: 3 1 40%;
+	order: 2;
+	background: #f7f7f7;
+	padding: 15px;
+}
+
+#headlessbody > #leftflank {
+	flex: 1 6 20%;
+	order: 1;
+	background: #581845;
+}
+
+#headlessbody > #rightflank {
+	flex: 1 6 20%;
+	order: 3;
+	background: #900C39;
+}
+
+
 .toolbar {
 	height: 80px;
 }
 
-.header:hover{
-	-webkit-transform: scale(1,1.05);
-	transition: 100ms;
 
-}
-
-body{
-	margin: 0;
-	font-family: "Helvetica", "Arial", sans-serif;
-	line-height: 1.6;
-	color: #555;
-}
 
 .middle-body {
 	/*border-radius: 25px;*/
@@ -80,11 +116,6 @@ hr {
 
 
 
-h1 {
-	text-align: center;
-	margin: auto;
-}
-
 textarea {
 	width: 400px;
 	height: 100px;
@@ -108,11 +139,37 @@ textarea {
 }
 
 
-@media (max-width: 768px){
-	.middle-body {
-		width: 80%;
+
+@media all and (max-width: 640px) {
+	#headlessbody, #page {
+		flex-direction: column;
 	}
-	.header > h1 {
-		font-size: 25px;
+
+	#headlessbody > header {
+		flex: 1 6 20%;
+	}
+
+	#headlessbody > #leftflank {
+		flex: 1 6 20%;
+	}
+
+	#headlessbody > #core {
+		flex: 3 1 20%;
+	}
+
+	#headlessbody > #rightflank {
+		flex: 1 6 20%;
+	}
+
+
+	#headlessbody > #leftflank, #headlessbody > #rightflank {
+		min-height: 50px;
+		max-height: 50px;
+	}
+
+	header > h1 {
+		font-size: 21pt;
 	}
 }
+
+
