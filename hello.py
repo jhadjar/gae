@@ -4,7 +4,7 @@
 	code to incorporate the knowledge I glean here and there to make it 
 	better with respect to Python, and good practices as I learn them.
 """
-
+import hmac
 import os
 import re
 import urllib2
@@ -20,10 +20,14 @@ __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2016'
 
 
+# Regular expressions for form input validation from CS253. Too limiting though.
+# TODO: Improve w/ https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet.
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 EMAIL_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
 
+
+SECRET = "tl;dr: This is the rythm of the night."
 PAGES = {
 	'main': "main.html",
 	'blog': "blog.html",
@@ -51,7 +55,7 @@ URLS = [
 	('/blog/?', 'hello.BlogHandler'),
 	('/blog/newpost', 'hello.NewPostHandler'),
 	('/blog/([0-9]+)', 'hello.PostHandler'),
-	('/blog/signup', 'hello.SignupHandler'),
+	('/signup', 'hello.SignupHandler'),
 	
 ]
 
@@ -117,18 +121,22 @@ class MainPage(Handler):
 	def get(self):
 		self.render(PAGES['main'])
 
+
 class PostHandler(Handler):
-	"""
-		Display a single article.
-
-		arguments:
-			article_id: the post id in the datastore
-		outputs:
-
-	"""
 
 	def get(self, article_id):
-		data = {'article': Article.get_by_id(int(article_id))}
+		"""
+			Display a single article.
+
+			arguments:
+				article_id: the post id in the datastore
+			output: render single article
+		"""
+
+		data = {
+			'article': Article.get_by_id(int(article_id)),
+		}
+
 		self.render(PAGES['lonepost'], data)
 
 
@@ -141,12 +149,12 @@ class BlogHandler(Handler):
 
 		data = {
 			'articles': self.fetch_articles(),
-			'visits': self.count_visits(),
 		}
 
+		# Forgive me Lord for what I am about to write..
 		self.response.headers.add_header(
 			'Set-Cookie',
-			'visits={}'.format(data['visits'])
+			'visits={}'.format(self.count_visits())
 		)
 
 		self.render(PAGES['blog'], data)
@@ -155,16 +163,81 @@ class BlogHandler(Handler):
 	def fetch_articles(self):
 		return db.GqlQuery('SELECT * FROM Article ORDER BY created DESC')
 
-	def count_visits(self):
-		return (1 + int(self.request.cookies.get('visits', '0')))
+	def parse_cookie(self):
+		visits = 0
+		try:
+			value, value_hash = self.request.cookies.get('visits').split('|')
 
+			good_cookie = self.check_secure_val(value, value_hash)
+			
+		except ValueError:
+			return 1
+		finally:
+			visits += 1
+			return visits
+
+
+
+	def count_visits(self):
+		"""
+				cookie format: visits=9|00df17ab7a4e013ea9811e0b9e2436b8
+				The number of visits before the pipe. The hash after the pipe.
+		"""
+
+		try:
+			value, value_hash = self.request.cookies.get('visits').split('|')
+
+		except ValueError:
+			return 1
+
+
+
+		# cookie_value = self.request.cookies.get('visits', '0')
+
+
+	def make_secure_val(self, value):
+		return hmac.new(SECRET, value).hexdigest()
+
+	def check_secure_val(self, value, value_hash):
+		"""
+			For a given pair value, hash provided by the user, check that the
+			computed hash of this value correspond to the user provided hash.
+
+			Arguments:
+				- value: the value we're interested in.
+				- value_hash: the hash of the value.
+
+			Output:
+				- Boolean of comparison between computed and provided hash.
+		"""
+		# Original is check_secure_val(h) and then splitting at the pipe '|'
+		# I think it's better to avoid assumptions about format and stick to 
+		# what we know won't change: we're comparing two values.
+		# I was going to do:	
+		#	return (SECRET + value).hexdigest() == value_hash
+		# But according to https://docs.python.org/2/library/hmac.html:
+		# Warning: When comparing the output of hexdigest() to an 
+		# externally-supplied digest during a verification routine, it is 
+		# recommended to use the compare_digest() function instead of 
+		# the == operator to reduce the vulnerability to timing attacks.
+
+		return hmac.compare_digest(value, value_hash)
 
 class SignupHandler(Handler):
+	"""
+		Handler for user signup/registration.
+	"""
 
 	def get(self):
+		"""
+			Render signup page.
+		"""
 		self.render(PAGES['signup'])
 
 	def post(self):
+		"""
+			Handle signup form.
+		"""
 
 		data = self.grab(
 			'username',
@@ -173,8 +246,18 @@ class SignupHandler(Handler):
 			'email',
 		)
 
+
+
+	def verify(self, data):
+		pass
 		# TODO: Signup verifications not yet complete. 
 		#		Toy a bit with that and App Engine's "users".
+
+class User(db.Model):
+	username = db.StringProperty(required=True)
+	password = db.StringProperty(required=True)
+	email = db.EmailProperty()
+
 
 class NewPostHandler(Handler):
 	"""
@@ -208,4 +291,9 @@ class Article(db.Model):
 	created = db.DateTimeProperty(auto_now_add=True)
 
 
-app = webapp2.WSGIApplication(URLS, debug=True)
+app = webapp2.WSGIApplication(
+	URLS,
+	debug=True,
+	config={
+		'hash_secret': SECRET,
+	})
